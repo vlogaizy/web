@@ -207,11 +207,11 @@
             canvas.height = window.innerHeight;
             
             if (window.innerWidth < 768) {
-                nodeCount = 60;
+                nodeCount = 40;
             } else if (window.innerWidth < 1024) {
-                nodeCount = 120;
+                nodeCount = 80;
             } else {
-                nodeCount = 200;
+                nodeCount = 150;
             }
             
             techNodes = [];
@@ -277,8 +277,8 @@
                     let other = techNodes[j];
                     let dist = Math.hypot(node.x - other.x, node.y - other.y);
                     if (dist < 120) {
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 * (1 - dist / 120)})`;
-                        ctx.lineWidth = 0.5;
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.4 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.8;
                         ctx.beginPath();
                         ctx.moveTo(node.x, node.y);
                         ctx.lineTo(other.x, other.y);
