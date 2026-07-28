@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLOGAIZY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;900&display=swap');
+
+        body {
+            background-color: #000;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            margin: 0;
+            overflow: hidden; 
+            transition: background-color 1s ease;
+        }
+
+        #network-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        #loader-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            z-index: 1000;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        #white-transition {
+            position: fixed;
+            inset: 0;
+            background: #fff;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .logo-loader {
+            width: 300px;
+            height: 300px;
+            opacity: 0;
+            transform: scale(0.5);
+            filter: none;
+            transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (max-width: 640px) {
+            .logo-loader {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        .logo-loader.animate-logo {
+            opacity: 1;
+            transform: scale(1);
+        }
+
+        .logo-loader.super-glow {
+            filter: drop-shadow(0 0 50px white) drop-shadow(0 0 100px white) drop-shadow(0 0 200px white) brightness(5);
+            transform: scale(1.3);
+            transition: all 0.5s ease-in;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .social-btn {
+            border: 1px solid #fff;
+            padding: 0.75rem 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            color: #fff;
+            background: transparent;
+        }
+
+        .social-btn:hover {
+            background: #fff;
+            color: #000;
+        }
+    </style>
+</head>
+<body class="text-white">
+
+    <canvas id="network-canvas"></canvas>
+    
+    <div id="white-transition"></div>
+
+    <div id="loader-screen">
+        <img src="VLOGAIZY Logo.png" alt="VLOGAIZY Logo" class="logo-loader" id="brand-logo" onerror="this.src='https://placehold.co/300x300/000000/FFFFFF?text=VLOGAIZY'">
+    </div>
+
+    <!-- Hero Section -->
+    <header class="min-h-screen flex flex-col justify-center items-center text-center p-6">
+        <h1 class="text-5xl md:text-8xl font-bold uppercase tracking-widest">VLOGAIZY</h1>
+        <p class="mt-4 text-gray-500 uppercase tracking-[0.4em] text-sm">Vlog | Ai | Lazy</p>
+    </header>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 px-6 max-w-4xl mx-auto text-center reveal">
+        <h2 class="text-3xl font-bold mb-8">Redefining Storytelling</h2>
+        <p class="text-gray-400 leading-relaxed text-lg">
+            We are a collective of creators pushing the boundaries of digital content. 
+            VLOGAIZY bridges the gap between high-end production and authentic community engagement. 
+            Welcome to the new era of media.
+        </p>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 px-6 max-w-7xl mx-auto reveal">
+        <h2 class="text-3xl font-bold text-center mb-16">Our Services</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="glass-panel p-8 rounded-lg hover:border-white transition">
+                <h3 class="text-xl font-bold mb-4">Content Strategy</h3>
+                <p class="text-gray-400">Data-driven approaches to ensure your content resonates with the right audience.</p>
+            </div>
+            <div class="glass-panel p-8 rounded-lg hover:border-white transition">
+                <h3 class="text-xl font-bold mb-4">Creative Direction</h3>
+                <p class="text-gray-400">Visual storytelling that captivates viewers from the first second of the video.</p>
+            </div>
+            <div class="glass-panel p-8 rounded-lg hover:border-white transition">
+                <h3 class="text-xl font-bold mb-4">Community Growth</h3>
+                <p class="text-gray-400">Building sustainable ecosystems around your brand and content vision.</p>
+            </div>
+            <div class="glass-panel p-8 rounded-lg hover:border-white transition">
+                <h3 class="text-xl font-bold mb-4">AI Ad Creation</h3>
+                <p class="text-gray-400">We create custom, high-impact AI ads tailored to your vision at affordable rates.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 px-6 text-center reveal">
+        <h2 class="text-3xl font-bold mb-10">Connect With Us</h2>
+        <div class="flex flex-wrap justify-center gap-6">
+            <a href="https://www.youtube.com/@VLOGAIZY" target="_blank" class="social-btn">YouTube</a>
+            <a href="https://www.facebook.com/VLOGAIZY" target="_blank" class="social-btn">Facebook</a>
+            <a href="https://www.tiktok.com/@vlogaizy_lk" target="_blank" class="social-btn">TikTok</a>
+        </div>
+    </section>
+
+    <footer class="py-10 text-center text-gray-600 text-sm border-t border-white/10 reveal">
+        &copy; 2026 VLOGAIZY. All Rights Reserved.
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        let frameCount = 0;
+        let mouse = { x: -1000, y: -1000 };
+
+        let techNodes = [];
+        let nodeCount = 200;
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            
+            if (window.innerWidth < 768) {
+                nodeCount = 60;
+            } else if (window.innerWidth < 1024) {
+                nodeCount = 120;
+            } else {
+                nodeCount = 200;
+            }
+            
+            techNodes = [];
+            for (let i = 0; i < nodeCount; i++) {
+                techNodes.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    vx: (Math.random() - 0.5) * 1.2,
+                    vy: (Math.random() - 0.5) * 1.2,
+                    size: Math.random() * 2 + 1.5
+                });
+            }
+        }
+
+        window.addEventListener('resize', initCanvas);
+        window.addEventListener('mousemove', (e) => {
+            mouse.x = e.clientX;
+            mouse.y = e.clientY;
+        });
+        initCanvas();
+
+        function drawHexagonGrid() {
+            const size = 50;
+            const height = Math.sqrt(3) * size;
+            const width = 2 * size;
+            
+            for (let y = -height; y < canvas.height + height; y += height * 0.75) {
+                for (let x = -width; x < canvas.width + width; x += width * 0.75) {
+                    const dx = mouse.x - x;
+                    const dy = mouse.y - y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const opacity = Math.max(0.03, 0.3 - (dist / 500));
+                    
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
+                    ctx.lineWidth = dist < 200 ? 1.5 : 0.75;
+                    
+                    ctx.beginPath();
+                    for (let i = 0; i < 6; i++) {
+                        const angle = Math.PI / 3 * i + (frameCount * 0.003);
+                        ctx.lineTo(x + size * Math.cos(angle), y + size * Math.sin(angle));
+                    }
+                    ctx.closePath();
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function drawTechNodes() {
+            for (let i = 0; i < techNodes.length; i++) {
+                let node = techNodes[i];
+                node.x += node.vx;
+                node.y += node.vy;
+
+                if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+                ctx.fill();
+
+                for (let j = i + 1; j < techNodes.length; j++) {
+                    let other = techNodes[j];
+                    let dist = Math.hypot(node.x - other.x, node.y - other.y);
+                    if (dist < 120) {
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.2 * (1 - dist / 120)})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.beginPath();
+                        ctx.moveTo(node.x, node.y);
+                        ctx.lineTo(other.x, other.y);
+                        ctx.stroke();
+                    }
+                }
+
+                let mouseDist = Math.hypot(node.x - mouse.x, node.y - mouse.y);
+                if (mouseDist < 150) {
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.7 * (1 - mouseDist / 150)})`;
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(node.x, node.y);
+                    ctx.lineTo(mouse.x, mouse.y);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function animateCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            frameCount++;
+            drawHexagonGrid();
+            drawTechNodes();
+            requestAnimationFrame(animateCanvas);
+        }
+        animateCanvas();
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('active');
+                } else {
+                    entry.target.classList.remove('active');
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        window.addEventListener('load', () => {
+            const logo = document.getElementById('brand-logo');
+            const loaderScreen = document.getElementById('loader-screen');
+            const whiteTransition = document.getElementById('white-transition');
+
+            setTimeout(() => {
+                logo.classList.add('animate-logo');
+            }, 100);
+
+            setTimeout(() => {
+                logo.classList.add('super-glow');
+            }, 600); 
+
+            setTimeout(() => {
+                whiteTransition.style.opacity = '1';
+                setTimeout(() => {
+                    loaderScreen.style.display = 'none';
+                    document.body.style.overflowY = 'auto';
+                    whiteTransition.style.opacity = '0';
+                }, 500);
+            }, 1000);
+        });
+    </script>
+</body>
+</html>
