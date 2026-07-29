@@ -338,14 +338,14 @@
                 filterEnvelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 0.5, baseFrequency: 200, octaves: 2 },
                 envelope: { attack: 0.01, decay: 0.1, sustain: 0.3, release: 0.5 }
             }).connect(filter);
-            moogLead.volume.value = -20;
+            moogLead.volume.value = -8;
 
             // Chords Synth (Background pads)
             polyChords = new Tone.PolySynth(Tone.Synth, {
                 oscillator: { type: "triangle" },
                 envelope: { attack: 0.5, decay: 0.5, sustain: 0.4, release: 0.5 }
             }).connect(reverb);
-            polyChords.volume.value = -25;
+            polyChords.volume.value = -12;
 
             Tone.Transport.bpm.value = 110;
             
