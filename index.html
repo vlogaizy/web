@@ -133,8 +133,8 @@
         <source src="Theme.MP3" type="audio/mpeg">
     </audio>
     
-    <button id="audio-toggle" class="fixed bottom-4 left-4 z-[9999] bg-white/10 p-2 rounded-full backdrop-blur hover:bg-white/20 transition-all cursor-pointer">
-        🎵
+    <button id="audio-toggle" class="fixed bottom-4 left-4 z-[9999] bg-white/10 p-2 rounded-full backdrop-blur hover:bg-white/20 transition-all cursor-pointer w-10 h-10 flex items-center justify-center text-xl">
+        🔇
     </button>
 
     <section id="about" class="py-20 px-6 max-w-4xl mx-auto text-center reveal">
@@ -228,7 +228,6 @@
         function initCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            // Optimized node count based on screen size
             let nodeCount = window.innerWidth < 640 ? 25 : (window.innerWidth < 1024 ? 60 : 100);
             techNodes = Array.from({ length: nodeCount }, () => ({
                 x: Math.random() * canvas.width,
@@ -247,9 +246,8 @@
             ctx.clearRect(0, 0, canvas.width, canvas.height);
             frameCount++;
             
-            // Dynamic line width for optimization
             const isMobile = window.innerWidth < 768;
-            const lineWidthVal = isMobile ? 1.5 : 3;
+            const lineWidthVal = isMobile ? 2.5 : 4;
 
             techNodes.forEach((node, i) => {
                 node.x += node.vx;
@@ -259,12 +257,12 @@
 
                 ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
                 ctx.beginPath();
-                ctx.arc(node.x, node.y, node.size + 1, 0, Math.PI * 2);
+                ctx.arc(node.x, node.y, node.size + 1.5, 0, Math.PI * 2);
                 ctx.fill();
 
                 let distMouse = Math.hypot(node.x - mouse.x, node.y - mouse.y);
-                if (distMouse < 250) {
-                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.9 * (1 - distMouse / 250)})`;
+                if (distMouse < 350) {
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.9 * (1 - distMouse / 350)})`;
                     ctx.beginPath();
                     ctx.lineWidth = lineWidthVal;
                     ctx.moveTo(node.x, node.y);
@@ -275,10 +273,10 @@
                 for (let j = i + 1; j < techNodes.length; j++) {
                     let other = techNodes[j];
                     let dist = Math.hypot(node.x - other.x, node.y - other.y);
-                    if (dist < 200) { 
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.5 * (1 - dist / 200)})`;
+                    if (dist < 250) { 
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.6 * (1 - dist / 250)})`;
                         ctx.beginPath();
-                        ctx.lineWidth = isMobile ? 1 : 2;
+                        ctx.lineWidth = isMobile ? 1.5 : 2.5;
                         ctx.moveTo(node.x, node.y);
                         ctx.lineTo(other.x, other.y);
                         ctx.stroke();
@@ -398,7 +396,6 @@
             requestAnimationFrame(updateGame);
         });
 
-        // IntersectionObserver with toggle logic for reverse animation
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) entry.target.classList.add('active');
@@ -407,31 +404,36 @@
         }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
+        // Enhanced Audio Handling
         window.addEventListener('load', () => {
-            // Audio Handling
             const audio = document.getElementById('bg-audio');
             const audioToggle = document.getElementById('audio-toggle');
-            
-            function playAudio() {
+            let isMuted = true;
+
+            const startAudio = () => {
                 audio.play().then(() => {
-                    console.log("Audio playing");
-                }).catch(e => {
-                    console.error("Autoplay failed:", e);
-                });
-            }
+                    isMuted = false;
+                    audioToggle.innerText = '🎵';
+                    document.removeEventListener('click', startAudio);
+                    document.removeEventListener('touchstart', startAudio);
+                    document.removeEventListener('keydown', startAudio);
+                }).catch(e => console.log("Waiting for user interaction..."));
+            };
+
+            // Trigger music on any user interaction
+            document.addEventListener('click', startAudio, { once: true });
+            document.addEventListener('touchstart', startAudio, { once: true });
+            document.addEventListener('keydown', startAudio, { once: true });
 
             audioToggle.addEventListener('click', () => {
                 if (audio.paused) {
-                    audio.play().catch(e => console.error(e));
+                    audio.play();
+                    audioToggle.innerText = '🎵';
                 } else {
                     audio.pause();
+                    audioToggle.innerText = '🔇';
                 }
             });
-
-            // Attempt autoplay on first interaction
-            window.addEventListener('click', playAudio, { once: true });
-            window.addEventListener('touchstart', playAudio, { once: true });
-            window.addEventListener('keydown', playAudio, { once: true });
 
             const logo = document.getElementById('brand-logo');
             const loaderScreen = document.getElementById('loader-screen');
