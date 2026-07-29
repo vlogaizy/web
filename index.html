@@ -320,9 +320,7 @@
         window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
         initCanvas();
 
-        // --- BACKGROUND AUDIO ENGINE ---
-        let ambientPad, softPiano, reverb;
-        let isMusicStarted = false;
+     let moogLead, polyChords, isMusicStarted = false;
 
         async function initAudioGlobal() {
             if (isMusicStarted) return;
@@ -330,38 +328,57 @@
             
             await Tone.start();
 
-            // Set BPM to 60 (1 beat = 1 second)
-            Tone.Transport.bpm.value = 60;
-            Tone.Transport.loop = true;
-            // 20-second loop
-            Tone.Transport.loopEnd = "20:0:0"; 
+            // Reverb to make it ambient and spacious
+            const reverb = new Tone.Reverb({ decay: 5, wet: 0.4 }).toDestination();
+            const filter = new Tone.Filter(1200, "lowpass").connect(reverb);
 
-            reverb = new Tone.Reverb({ decay: 10, wet: 0.5 }).toDestination();
+            // Main Lead Synth (The "Moog" style saw wave)
+            moogLead = new Tone.MonoSynth({
+                oscillator: { type: "sawtooth" },
+                filterEnvelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 0.5, baseFrequency: 200, octaves: 2 },
+                envelope: { attack: 0.01, decay: 0.1, sustain: 0.3, release: 0.5 }
+            }).connect(filter);
+            moogLead.volume.value = -20;
 
-            ambientPad = new Tone.PolySynth(Tone.Synth, {
-                oscillator: { type: "sine" },
-                envelope: { attack: 4, decay: 1, sustain: 0.5, release: 8 }
-            }).connect(reverb);
-            ambientPad.volume.value = -28;
-
-            softPiano = new Tone.PolySynth(Tone.Synth, {
+            // Chords Synth (Background pads)
+            polyChords = new Tone.PolySynth(Tone.Synth, {
                 oscillator: { type: "triangle" },
-                envelope: { attack: 0.05, decay: 0.3, sustain: 0.1, release: 2 }
+                envelope: { attack: 0.5, decay: 0.5, sustain: 0.4, release: 0.5 }
             }).connect(reverb);
-            softPiano.volume.value = -22;
+            polyChords.volume.value = -25;
+
+            Tone.Transport.bpm.value = 110;
             
-            // Loop pattern
-            Tone.Transport.scheduleRepeat((time) => {
-                ambientPad.triggerAttackRelease(["C3", "G3", "C4"], "4n", time);
-            }, "4n"); 
+            // Chord progression: Cmaj -> Am -> Fmaj -> Gmaj
+            const progression = [
+                ["C3", "E3", "G3"], 
+                ["A2", "C3", "E3"], 
+                ["F2", "A2", "C3"], 
+                ["G2", "B2", "D3"]
+            ];
             
-            Tone.Transport.scheduleRepeat((time) => {
-                if (Math.random() > 0.4) {
-                    const notes = ["C4", "E4", "G4", "A4", "D4", "B3"];
-                    softPiano.triggerAttackRelease(notes[Math.floor(Math.random() * notes.length)], "8n", time + Math.random() * 2);
+            // Melody with Zen variety
+            const melody = ["C4", "E4", "G4", "A4", "G4", "E4", "C4", "A3"];
+            
+            let step = 0;
+            let chordStep = 0;
+
+            // Start the sequencer
+            new Tone.Loop((time) => {
+                // Play chord every 6 steps
+                if (step % 6 === 0) {
+                    polyChords.triggerAttackRelease(progression[chordStep % progression.length], "3n", time);
+                    chordStep++;
                 }
-            }, "2n");
-            
+
+                // Play melody with probability to add variety
+                if (Math.random() > 0.1) {
+                    moogLead.triggerAttackRelease(melody[step % melody.length], "8n", time);
+                }
+                
+                step++;
+            }, "4n").start(0);
+
             Tone.Transport.start();
         }
         // Initialize music on first click anywhere
