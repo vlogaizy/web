@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,7 +13,8 @@
             font-family: 'Montserrat', sans-serif;
             color: #fff;
             margin: 0;
-            overflow: hidden; 
+            overflow-y: auto; 
+            overflow-x: hidden;
             transition: background-color 1s ease;
         }
 
@@ -57,16 +58,10 @@
         }
 
         @media (max-width: 640px) {
-            .logo-loader {
-                width: 150px;
-                height: 150px;
-            }
+            .logo-loader { width: 150px; height: 150px; }
         }
 
-        .logo-loader.animate-logo {
-            opacity: 1;
-            transform: scale(1);
-        }
+        .logo-loader.animate-logo { opacity: 1; transform: scale(1); }
 
         .logo-loader.super-glow {
             filter: drop-shadow(0 0 50px white) drop-shadow(0 0 100px white) drop-shadow(0 0 200px white) brightness(5);
@@ -82,8 +77,8 @@
 
         .reveal {
             opacity: 0;
-            transform: translateY(50px);
-            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            transform: translateY(20px);
+            transition: all 0.7s cubic-bezier(0.2, 0, 0.3, 1);
         }
 
         .reveal.active {
@@ -102,9 +97,19 @@
             background: transparent;
         }
 
-        .social-btn:hover {
-            background: #fff;
-            color: #000;
+        .social-btn:hover { background: #fff; color: #000; }
+
+        #game-canvas {
+            width: 100%;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: crosshair;
+            border-radius: 0.5rem;
+            touch-action: none;
+        }
+        @media (min-width: 768px) {
+            #game-canvas { height: 400px; }
         }
     </style>
 </head>
@@ -118,13 +123,11 @@
         <img src="VLOGAIZY Logo.png" alt="VLOGAIZY Logo" class="logo-loader" id="brand-logo" onerror="this.src='https://placehold.co/300x300/000000/FFFFFF?text=VLOGAIZY'">
     </div>
 
-    <!-- Hero Section -->
     <header class="min-h-screen flex flex-col justify-center items-center text-center p-6">
         <h1 class="text-5xl md:text-8xl font-bold uppercase tracking-widest">VLOGAIZY</h1>
         <p class="mt-4 text-gray-500 uppercase tracking-[0.4em] text-sm">Vlog | Ai | Lazy</p>
     </header>
 
-    <!-- About Section -->
     <section id="about" class="py-20 px-6 max-w-4xl mx-auto text-center reveal">
         <h2 class="text-3xl font-bold mb-8">Redefining Storytelling</h2>
         <p class="text-gray-400 leading-relaxed text-lg mb-6">
@@ -132,54 +135,67 @@
             VLOGAIZY bridges the gap between high-end production and authentic community engagement. 
             Welcome to the new era of media where we combine human creativity with AI-powered efficiency.
         </p>
-        <p class="text-gray-400 leading-relaxed text-lg">
-            Our mission is to simplify the complex, making high-quality content production accessible and sustainable. 
-            Whether you're looking for strategy, creative direction, or community growth, we provide the tools to scale your vision.
-        </p>
     </section>
 
     <!-- Founder Section -->
     <section id="founder" class="py-20 px-6 max-w-4xl mx-auto reveal">
-        <div class="glass-panel p-8 md:p-12 rounded-lg flex flex-col md:flex-row items-center gap-8">
-            <div class="flex-shrink-0">
-                <img src="Founder.jpg" alt="Lasindu Bineesha" class="w-48 h-48 rounded-full border-2 border-white/20 object-cover shadow-lg">
+        <div class="glass-panel p-8 rounded-xl flex flex-col md:flex-row items-center gap-8">
+            <div class="w-32 h-32 rounded-full overflow-hidden bg-gray-800 flex-shrink-0 border-2 border-white/20">
+                <img src="Founder.jpg" alt="Founder" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/200x200/000000/FFFFFF?text=Founder'">
             </div>
             <div>
                 <h3 class="text-2xl font-bold mb-2">Lasindu Bineesha</h3>
-                <p class="text-gray-500 uppercase tracking-widest text-sm mb-4">Founder & Creative Visionary</p>
-                <p class="text-gray-400 leading-relaxed">
-                    Lasindu Bineesha is the creative mind behind VLOGAIZY. With a passion for innovation and a deep understanding of the digital media landscape, 
-                    he founded this collective to empower creators. Lasindu believes in the power of authenticity and technology, constantly seeking new 
-                    ways to merge AI efficiency with raw, human-centered storytelling.
-                </p>
+                <p class="text-gray-400 italic mb-4">"VLOGAIZY was born from a vision to simplify complex storytelling."</p>
+                <p class="text-sm text-gray-500 mb-4">CEO & Founder</p>
+                <div class="flex gap-4">
+                    <a href="https://www.facebook.com/LKBineesha" target="_blank" class="hover:text-blue-500 transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874V12h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="https://www.instagram.com/lasindu_bineesha" target="_blank" class="hover:text-pink-500 transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.073 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.073-4.947-.197-4.354-2.618-6.78-6.979-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.791-4-4 0-2.209 1.791-4 4-4 2.209 0 4 1.791 4 4 0 2.209-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                    <a href="https://wa.link/60lgdn" target="_blank" class="hover:text-green-500 transition-colors">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.591 5.52 0 10.036-4.516 10.036-10.035 0-5.52-4.516-10.036-10.036-10.036-5.52 0-10.036 4.516-10.036 10.036 0 2.158.625 4.303 1.802 6.176l-1.185 4.324 4.427-1.16zm9.29-6.494c-.28-.14-1.655-.817-1.912-.911-.258-.093-.446-.14-.635.14-.19.28-.731.912-.896 1.099-.164.187-.329.21-.607.07-.279-.14-1.177-.434-2.242-1.385-.828-.739-1.389-1.651-1.551-1.931-.162-.28-.017-.431.123-.57.126-.123.28-.321.42-.481.14-.16.187-.279.28-.466.094-.187.047-.35-.023-.49-.07-.14-.635-1.531-.871-2.097-.229-.54-.463-.466-.635-.474-.164-.008-.352-.009-.54-.009s-.492.071-.75.35c-.258.28-.985.962-.985 2.346 0 1.384 1.008 2.72 1.148 2.906.14.187 1.983 3.029 4.805 4.249.673.29 1.199.463 1.61.593.679.215 1.298.185 1.786.113.545-.081 1.655-.677 1.889-1.33.234-.653.234-1.213.164-1.33-.07-.117-.258-.187-.538-.328z"/></svg>
+                    </a>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Services Section -->
-    <section id="services" class="py-20 px-6 max-w-7xl mx-auto reveal">
-        <h2 class="text-3xl font-bold text-center mb-16">Our Services</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            <div class="glass-panel p-8 rounded-lg hover:border-white transition">
-                <h3 class="text-xl font-bold mb-4">Content Strategy</h3>
-                <p class="text-gray-400">Data-driven approaches to ensure your content resonates with the right audience.</p>
+    <section id="services" class="py-20 px-6 max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12 reveal">Our Services</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-panel p-8 rounded-xl text-center hover:border-white transition-all reveal" style="transition-delay: 0.1s">
+                <h3 class="text-xl font-bold mb-4">Content Creation</h3>
+                <p class="text-gray-400">High-end video production tailored to your unique audience.</p>
             </div>
-            <div class="glass-panel p-8 rounded-lg hover:border-white transition">
-                <h3 class="text-xl font-bold mb-4">Creative Direction</h3>
-                <p class="text-gray-400">Visual storytelling that captivates viewers from the first second of the video.</p>
+            <div class="glass-panel p-8 rounded-xl text-center hover:border-white transition-all reveal" style="transition-delay: 0.2s">
+                <h3 class="text-xl font-bold mb-4">AI Integration</h3>
+                <p class="text-gray-400">Leveraging cutting-edge AI tools for faster editing and smarter workflows.</p>
             </div>
-            <div class="glass-panel p-8 rounded-lg hover:border-white transition">
-                <h3 class="text-xl font-bold mb-4">Community Growth</h3>
-                <p class="text-gray-400">Building sustainable ecosystems around your brand and content vision.</p>
-            </div>
-            <div class="glass-panel p-8 rounded-lg hover:border-white transition">
-                <h3 class="text-xl font-bold mb-4">AI Ad Creation</h3>
-                <p class="text-gray-400">We create custom, high-impact AI ads tailored to your vision at affordable rates.</p>
+            <div class="glass-panel p-8 rounded-xl text-center hover:border-white transition-all reveal" style="transition-delay: 0.3s">
+                <h3 class="text-xl font-bold mb-4">Strategy Consulting</h3>
+                <p class="text-gray-400">Data-driven strategies to grow your digital presence and engagement.</p>
             </div>
         </div>
     </section>
 
-    <!-- Contact Section -->
+    <section id="mini-game" class="py-20 px-6 max-w-4xl mx-auto reveal">
+        <h2 class="text-3xl font-bold text-center mb-8">Fun Time</h2>
+        <div class="glass-panel p-6 rounded-lg mb-6">
+            <div class="flex justify-between items-center mb-4 text-lg font-bold">
+                <span>Score: <span id="score">0</span></span>
+                <div id="lives" class="flex gap-1 text-red-500">
+                    <span>🤍🤍🤍</span>
+                </div>
+                <button id="start-btn" class="bg-white text-black px-3 md:px-6 py-2 rounded-full font-bold hover:bg-gray-200 transition text-xs md:text-base">Start Game</button>
+            </div>
+            <canvas id="game-canvas"></canvas>
+            <p class="text-center text-gray-500 mt-4 text-sm">Tap/Click the VLOGAIZY Logo before they fade!</p>
+        </div>
+    </section>
+
     <section id="contact" class="py-20 px-6 text-center reveal">
         <h2 class="text-3xl font-bold mb-10">Connect With Us</h2>
         <div class="flex flex-wrap justify-center gap-6">
@@ -198,146 +214,200 @@
         const ctx = canvas.getContext('2d');
         let frameCount = 0;
         let mouse = { x: -1000, y: -1000 };
-
         let techNodes = [];
-        let nodeCount = 200;
 
         function initCanvas() {
             canvas.width = window.innerWidth;
             canvas.height = window.innerHeight;
-            
-            if (window.innerWidth < 768) {
-                nodeCount = 40;
-            } else if (window.innerWidth < 1024) {
-                nodeCount = 80;
-            } else {
-                nodeCount = 150;
-            }
-            
-            techNodes = [];
-            for (let i = 0; i < nodeCount; i++) {
-                techNodes.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    vx: (Math.random() - 0.5) * 1.2,
-                    vy: (Math.random() - 0.5) * 1.2,
-                    size: Math.random() * 2 + 1.5
-                });
-            }
+            // Optimized node count based on screen size
+            let nodeCount = window.innerWidth < 640 ? 25 : (window.innerWidth < 1024 ? 60 : 100);
+            techNodes = Array.from({ length: nodeCount }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 1.2,
+                vy: (Math.random() - 0.5) * 1.2,
+                size: Math.random() * 2 + 1.5
+            }));
         }
 
         window.addEventListener('resize', initCanvas);
-        window.addEventListener('mousemove', (e) => {
-            mouse.x = e.clientX;
-            mouse.y = e.clientY;
-        });
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
         initCanvas();
 
-        function drawHexagonGrid() {
-            const size = 50;
-            const height = Math.sqrt(3) * size;
-            const width = 2 * size;
+        function drawBackground() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            frameCount++;
             
-            for (let y = -height; y < canvas.height + height; y += height * 0.75) {
-                for (let x = -width; x < canvas.width + width; x += width * 0.75) {
-                    const dx = mouse.x - x;
-                    const dy = mouse.y - y;
-                    const dist = Math.sqrt(dx * dx + dy * dy);
-                    const opacity = Math.max(0.03, 0.3 - (dist / 500));
-                    
-                    ctx.strokeStyle = `rgba(255, 255, 255, ${opacity})`;
-                    ctx.lineWidth = dist < 200 ? 1.5 : 0.75;
-                    
-                    ctx.beginPath();
-                    for (let i = 0; i < 6; i++) {
-                        const angle = Math.PI / 3 * i + (frameCount * 0.003);
-                        ctx.lineTo(x + size * Math.cos(angle), y + size * Math.sin(angle));
-                    }
-                    ctx.closePath();
-                    ctx.stroke();
-                }
-            }
-        }
+            // Dynamic line width for optimization
+            const isMobile = window.innerWidth < 768;
+            const lineWidthVal = isMobile ? 1.5 : 3;
 
-        function drawTechNodes() {
-            for (let i = 0; i < techNodes.length; i++) {
-                let node = techNodes[i];
+            techNodes.forEach((node, i) => {
                 node.x += node.vx;
                 node.y += node.vy;
-
                 if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
                 if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
 
-                ctx.fillStyle = 'rgba(255, 255, 255, 0.7)';
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
                 ctx.beginPath();
-                ctx.arc(node.x, node.y, node.size, 0, Math.PI * 2);
+                ctx.arc(node.x, node.y, node.size + 1, 0, Math.PI * 2);
                 ctx.fill();
+
+                let distMouse = Math.hypot(node.x - mouse.x, node.y - mouse.y);
+                if (distMouse < 250) {
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.9 * (1 - distMouse / 250)})`;
+                    ctx.beginPath();
+                    ctx.lineWidth = lineWidthVal;
+                    ctx.moveTo(node.x, node.y);
+                    ctx.lineTo(mouse.x, mouse.y);
+                    ctx.stroke();
+                }
 
                 for (let j = i + 1; j < techNodes.length; j++) {
                     let other = techNodes[j];
                     let dist = Math.hypot(node.x - other.x, node.y - other.y);
-                    if (dist < 120) {
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.4 * (1 - dist / 120)})`;
-                        ctx.lineWidth = 0.8;
+                    if (dist < 200) { 
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.5 * (1 - dist / 200)})`;
                         ctx.beginPath();
+                        ctx.lineWidth = isMobile ? 1 : 2;
                         ctx.moveTo(node.x, node.y);
                         ctx.lineTo(other.x, other.y);
                         ctx.stroke();
                     }
                 }
+            });
+            requestAnimationFrame(drawBackground);
+        }
+        drawBackground();
 
-                let mouseDist = Math.hypot(node.x - mouse.x, node.y - mouse.y);
-                if (mouseDist < 150) {
-                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.7 * (1 - mouseDist / 150)})`;
-                    ctx.lineWidth = 2;
-                    ctx.beginPath();
-                    ctx.moveTo(node.x, node.y);
-                    ctx.lineTo(mouse.x, mouse.y);
-                    ctx.stroke();
-                }
+        const gameCanvas = document.getElementById('game-canvas');
+        const gameCtx = gameCanvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const livesEl = document.getElementById('lives');
+        const startBtn = document.getElementById('start-btn');
+        const nodeImg = new Image();
+        nodeImg.src = 'VLOGAIZY Logo.png'; 
+        
+        let gameActive = false;
+        let score = 0;
+        let lives = 3;
+        let gameNodes = [];
+        let spawnRate = 1000;
+        let lastSpawnTime = 0;
+
+        function initGameCanvas() {
+            gameCanvas.width = gameCanvas.offsetWidth;
+            gameCanvas.height = gameCanvas.offsetHeight;
+        }
+        window.addEventListener('resize', initGameCanvas);
+        initGameCanvas();
+
+        function updateGame(timestamp) {
+            if (!gameActive) return;
+            gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+            if (timestamp - lastSpawnTime > Math.max(300, spawnRate - (score * 20))) {
+                const isDesktop = window.innerWidth >= 768;
+                const nodeRadius = isDesktop ? 45 : 25; 
+                gameNodes.push({
+                    x: Math.random() * (gameCanvas.width - nodeRadius * 2) + nodeRadius,
+                    y: Math.random() * (gameCanvas.height - nodeRadius * 2) + nodeRadius,
+                    radius: nodeRadius,
+                    life: 1.0,
+                    decay: 0.005 + (score * 0.0005)
+                });
+                lastSpawnTime = timestamp;
             }
-        }
 
-        function animateCanvas() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            frameCount++;
-            drawHexagonGrid();
-            drawTechNodes();
-            requestAnimationFrame(animateCanvas);
-        }
-        animateCanvas();
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('active');
+            gameNodes.forEach((node, index) => {
+                node.life -= node.decay;
+                if (node.life <= 0) {
+                    gameNodes.splice(index, 1);
+                    lives--;
+                    updateLivesDisplay();
+                    if (lives <= 0) gameOver();
+                    return;
+                }
+                gameCtx.globalAlpha = node.life;
+                if (nodeImg.complete) {
+                    gameCtx.drawImage(nodeImg, node.x - node.radius, node.y - node.radius, node.radius * 2, node.radius * 2);
                 } else {
-                    entry.target.classList.remove('active');
+                    gameCtx.fillStyle = '#fff';
+                    gameCtx.beginPath();
+                    gameCtx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                    gameCtx.fill();
+                }
+                gameCtx.globalAlpha = 1.0;
+            });
+            requestAnimationFrame(updateGame);
+        }
+
+        function updateLivesDisplay() {
+            livesEl.innerHTML = '🤍'.repeat(lives) + '🖤'.repeat(3 - lives);
+        }
+
+        function gameOver() {
+            gameActive = false;
+            startBtn.innerText = "Restart Game";
+            startBtn.disabled = false;
+            gameCtx.fillStyle = "white";
+            gameCtx.textAlign = "center";
+            gameCtx.font = "bold 30px Montserrat";
+            gameCtx.fillText("GAME OVER!", gameCanvas.width / 2, gameCanvas.height / 2 - 20);
+            gameCtx.font = "20px Montserrat";
+            gameCtx.fillText("Final Score: " + score, gameCanvas.width / 2, gameCanvas.height / 2 + 20);
+        }
+
+        function handleInput(clientX, clientY) {
+            if (!gameActive) return;
+            const rect = gameCanvas.getBoundingClientRect();
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+            gameNodes.forEach((node, index) => {
+                if (Math.hypot(node.x - x, node.y - y) < node.radius * 2) {
+                    score++;
+                    scoreEl.innerText = score;
+                    gameNodes.splice(index, 1);
                 }
             });
-        }, { threshold: 0.1 });
+        }
 
+        gameCanvas.addEventListener('mousedown', (e) => handleInput(e.clientX, e.clientY));
+        gameCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleInput(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: false });
+
+        startBtn.addEventListener('click', () => {
+            gameActive = true;
+            score = 0;
+            lives = 3;
+            scoreEl.innerText = score;
+            updateLivesDisplay();
+            startBtn.innerText = "Running...";
+            startBtn.disabled = true;
+            gameNodes = [];
+            requestAnimationFrame(updateGame);
+        });
+
+        // IntersectionObserver with toggle logic for reverse animation
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+                else entry.target.classList.remove('active');
+            });
+        }, { threshold: 0.1 });
         document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
 
         window.addEventListener('load', () => {
             const logo = document.getElementById('brand-logo');
             const loaderScreen = document.getElementById('loader-screen');
-            const whiteTransition = document.getElementById('white-transition');
-
+            setTimeout(() => logo.classList.add('animate-logo'), 100);
+            setTimeout(() => logo.classList.add('super-glow'), 600); 
             setTimeout(() => {
-                logo.classList.add('animate-logo');
-            }, 100);
-
-            setTimeout(() => {
-                logo.classList.add('super-glow');
-            }, 600); 
-
-            setTimeout(() => {
-                whiteTransition.style.opacity = '1';
+                document.getElementById('white-transition').style.opacity = '1';
                 setTimeout(() => {
                     loaderScreen.style.display = 'none';
-                    document.body.style.overflowY = 'auto';
-                    whiteTransition.style.opacity = '0';
+                    document.getElementById('white-transition').style.opacity = '0';
                 }, 500);
             }, 1000);
         });
