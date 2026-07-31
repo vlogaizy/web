@@ -1,1686 +1,620 @@
 <!DOCTYPE html>
-<html>
+<html lang="en" class="scroll-smooth">
 <head>
-
-<title>Promt Gen</title>
-
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<style>
-
-*{
-box-sizing:border-box;
-}
-
-body{
-margin:0;
-height:100vh;
-overflow:hidden;
-font-family:Segoe UI,sans-serif;
-display:flex;
-align-items:center;
-justify-content:center;
-color:white;
-
-background:
-radial-gradient(circle at 20% 20%,#3b0764,transparent 35%),
-radial-gradient(circle at 80% 70%,#003b4d,transparent 40%),
-#010107;
-}
-
-
-#network{
-position:absolute;
-inset:0;
-z-index:0;
-}
-
-
-#login{
-position:fixed;
-inset:0;
-z-index:100;
-
-display:flex;
-align-items:center;
-justify-content:center;
-
-background:
-linear-gradient(
-135deg,
-#020204,
-#15002b,
-#002b3a
-);
-}
-
-
-.login-box{
-
-width:90%;
-max-width:400px;
-
-padding:40px;
-
-text-align:center;
-
-border-radius:30px;
-
-background:
-rgba(255,255,255,.08);
-
-backdrop-filter:blur(25px);
-
-border:
-1px solid rgba(255,255,255,.3);
-
-}
-
-
-.login-box input{
-
-width:100%;
-
-padding:15px;
-
-margin:20px 0;
-
-border-radius:15px;
-
-border:1px solid #555;
-
-background:black;
-
-color:white;
-
-text-align:center;
-
-font-size:18px;
-
-}
-
-
-#error{
-display:none;
-color:#ff6666;
-}
-
-
-
-.container{
-
-position:relative;
-
-z-index:5;
-
-width:90%;
-
-max-width:950px;
-
-padding:40px;
-
-border-radius:35px;
-
-background:
-rgba(255,255,255,.08);
-
-backdrop-filter:blur(30px);
-
-border:
-1px solid rgba(255,255,255,.2);
-
-}
-
-
-
-h1{
-
-text-align:center;
-
-font-size:45px;
-
-background:
-linear-gradient(
-90deg,
-white,
-#8be9fd,
-#d8b4fe
-);
-
--webkit-background-clip:text;
-
-color:transparent;
-
-}
-
-
-
-.subtitle{
-
-text-align:center;
-
-opacity:.7;
-
-}
-
-
-
-.buttons{
-
-display:flex;
-
-justify-content:center;
-
-gap:15px;
-
-margin:25px;
-
-}
-
-
-
-button{
-
-padding:16px 40px;
-
-border-radius:18px;
-
-cursor:pointer;
-
-font-size:17px;
-
-color:white;
-
-font-weight:bold;
-
-background:
-rgba(255,255,255,.12);
-
-border:
-1px solid rgba(255,255,255,.3);
-
-transition:.3s;
-
-}
-
-
-
-button:hover{
-
-transform:translateY(-5px);
-
-background:
-linear-gradient(
-135deg,
-#7c3aed,
-#0891b2
-);
-
-}
-
-
-
-textarea{
-
-width:100%;
-
-height:380px;
-
-padding:20px;
-
-border-radius:25px;
-
-background:
-rgba(0,0,0,.6);
-
-color:white;
-
-border:1px solid #555;
-
-font-size:16px;
-
-resize:none;
-
-}
-
-
-
-.footer{
-
-position:absolute;
-
-bottom:20px;
-
-left:50%;
-
-transform:translateX(-50%);
-
-z-index:10;
-
-letter-spacing:4px;
-
-opacity:.8;
-
-}
-
-
-
-@media(max-width:700px){
-
-.container{
-
-width:95%;
-
-padding:25px;
-
-}
-
-
-h1{
-
-font-size:30px;
-
-}
-
-
-.buttons{
-
-flex-direction:column;
-
-}
-
-
-button{
-
-width:100%;
-
-}
-
-
-textarea{
-
-height:280px;
-
-}
-
-}
-
-</style>
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLOGAIZY</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/tone/14.8.49/Tone.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;900&display=swap');
+
+        body {
+            background-color: #000;
+            font-family: 'Montserrat', sans-serif;
+            color: #fff;
+            margin: 0;
+            overflow-y: auto; 
+            overflow-x: hidden;
+            transition: background-color 1s ease;
+        }
+
+        #network-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+        #loader-screen {
+            position: fixed;
+            inset: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #000;
+            z-index: 1000;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        #white-transition {
+            position: fixed;
+            inset: 0;
+            background: #fff;
+            z-index: 2000;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.8s ease-in-out;
+        }
+
+        .logo-loader {
+            width: 300px;
+            height: 300px;
+            opacity: 0;
+            transform: scale(0.5);
+            filter: none;
+            transition: all 1.5s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @media (max-width: 640px) {
+            .logo-loader { width: 150px; height: 150px; }
+        }
+
+        .logo-loader.animate-logo { opacity: 1; transform: scale(1); }
+
+        .logo-loader.super-glow {
+            filter: drop-shadow(0 0 50px white) drop-shadow(0 0 100px white) drop-shadow(0 0 200px white) brightness(5);
+            transform: scale(1.3);
+            transition: all 0.5s ease-in;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease;
+        }
+
+        .glass-panel:hover {
+            transform: translateY(-8px);
+            border-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .content-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: border-color 0.4s ease, box-shadow 0.4s ease;
+        }
+        .content-card:hover {
+            border-color: rgba(255, 255, 255, 0.5);
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+        }
+
+        .static-panel {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px) scale(0.95);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+
+        .social-btn {
+            border: 1px solid #fff;
+            padding: 0.75rem 2rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            font-size: 0.75rem;
+            transition: all 0.3s ease;
+            color: #fff;
+            background: transparent;
+        }
+
+        .social-btn:hover { background: #fff; color: #000; }
+
+        .animate-gradient {
+            background-size: 200% 100%;
+            animation: gradient-shift 2s linear infinite;
+        }
+        @keyframes gradient-shift {
+            0% { background-position: 0% 50%; }
+            100% { background-position: 200% 50%; }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+
+        @keyframes slide-up {
+            0% { opacity: 0; transform: translateY(20px); }
+            100% { opacity: 1; transform: translateY(0); }
+        }
+        .animate-slide-up {
+            animation: slide-up 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            opacity: 0;
+        }
+
+        #game-canvas {
+            width: 100%;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            cursor: crosshair;
+            border-radius: 0.5rem;
+            touch-action: none;
+        }
+        @media (min-width: 768px) {
+            #game-canvas { height: 400px; }
+        }
+    </style>
 </head>
-
-
-<body>
-
-
-<div id="login">
-
-<div class="login-box">
-
-<h1>
-🔐 LAZY AI
-</h1>
-
-<p>
-Enter Password
-</p>
-
-
-<input 
-id="password"
-type="password"
-placeholder="Password">
-
-
-<button onclick="unlock()">
-UNLOCK
-</button>
-
-
-<div id="error">
-Wrong Password
-</div>
-
-
-</div>
-
-</div>
-
-
-
-<canvas id="network"></canvas>
-
-
-<div class="container">
-
-
-<h1>
-🥚 Dark Magic Egg AI 🥚
-</h1>
-
-
-<div class="subtitle">
-Infinite Fantasy Prompt Generator
-</div>
-
-
-<div class="buttons">
-
-<button onclick="generatePrompt()">
-🎲 Generate
-</button>
-
-
-<button onclick="copyPrompt()">
-📋 Copy
-</button>
-
-
-</div>
-
-
-<textarea id="output"></textarea>
-
-
-</div>
-
-
-
-<div class="footer">
-Create by Lazy ᵥ3
-</div>
-
-
-<script>
-
-/* =====================
-LOGIN
-===================== */
-
-function unlock(){
-
-let p=password.value;
-
-if(p==="1111"){
-
-localStorage.setItem(
-"lazyAIUnlocked",
-"yes"
-);
-
-login.style.display="none";
-
-}
-
-else{
-
-error.style.display="block";
-
-}
-
-}
-
-
-window.onload=()=>{
-
-if(
-localStorage.getItem("lazyAIUnlocked")
-==="yes"
-){
-
-login.style.display="none";
-
-}
-
-};
-
-
-
-password.onkeypress=e=>{
-
-if(e.key==="Enter")
-unlock();
-
-};
-
-
-
-
-
-/* =====================
-NETWORK
-===================== */
-
-
-const canvas=document.getElementById("network");
-
-const ctx=canvas.getContext("2d");
-
-
-canvas.width=innerWidth;
-
-canvas.height=innerHeight;
-
-
-let mouse={x:null,y:null};
-
-
-onmousemove=e=>{
-
-mouse.x=e.clientX;
-
-mouse.y=e.clientY;
-
-};
-
-
-
-class Node{
-
-
-constructor(){
-
-this.x=Math.random()*canvas.width;
-
-this.y=Math.random()*canvas.height;
-
-
-this.vx=(Math.random()-.5)*.5;
-
-this.vy=(Math.random()-.5)*.5;
-
-}
-
-
-
-update(){
-
-this.x+=this.vx;
-
-this.y+=this.vy;
-
-}
-
-
-
-draw(){
-
-ctx.beginPath();
-
-ctx.arc(
-this.x,
-this.y,
-2,
-0,
-Math.PI*2
-);
-
-
-ctx.fillStyle="#8be9fd";
-
-
-ctx.fill();
-
-}
-
-
-}
-
-
-
-
-let nodes=[];
-
-
-for(let i=0;i<100;i++){
-
-nodes.push(new Node());
-
-}
-
-
-
-
-function animate(){
-
-
-ctx.clearRect(
-0,
-0,
-canvas.width,
-canvas.height
-);
-
-
-
-nodes.forEach(n=>{
-
-n.update();
-
-n.draw();
-
-});
-
-
-
-
-for(let a=0;a<nodes.length;a++){
-
-
-for(let b=a;b<nodes.length;b++){
-
-
-let dx=nodes[a].x-nodes[b].x;
-
-let dy=nodes[a].y-nodes[b].y;
-
-
-let d=Math.sqrt(dx*dx+dy*dy);
-
-
-
-if(d<120){
-
-
-ctx.beginPath();
-
-ctx.moveTo(
-nodes[a].x,
-nodes[a].y
-);
-
-
-ctx.lineTo(
-nodes[b].x,
-nodes[b].y
-);
-
-
-
-ctx.strokeStyle=
-"rgba(150,220,255,.2)";
-
-
-ctx.stroke();
-
-
-}
-
-
-}
-
-}
-
-
-requestAnimationFrame(animate);
-
-
-}
-
-
-animate();
-
-
-
-
-
-/* =====================
-INFINITE PROMPT DATA
-===================== */
-
-
-const data={
-
-
-
-material:[
-
-"obsidian",
-"ancient stone",
-"translucent crystal",
-"moonstone",
-"shadow quartz",
-"celestial meteor stone",
-"void glass",
-"black diamond",
-"frozen sapphire",
-"nebula crystal",
-"dragon scale stone",
-"forgotten temple rock",
-"abyssal gemstone",
-"emerald crystal",
-"blood ruby",
-"star fragment",
-"galaxy marble",
-"phantom quartz",
-"dark amethyst",
-"silver moon crystal",
-"enchanted granite",
-"volcanic glass",
-"fossilized magic stone",
-"glowing jade",
-"crystalized shadow",
-"cosmic pearl",
-"ancient obsidian shard",
-"meteor iron",
-"frost crystal",
-"eternal ice stone",
-"aurora crystal",
-"black opal",
-"mystic sapphire",
-"cursed gemstone",
-"dragon heart crystal",
-"celestial pearl",
-"void marble",
-"dark crystal glass",
-"astral rock",
-"fallen star fragment",
-"witchstone",
-"arcane crystal",
-"phantom gemstone",
-"lava stone",
-"storm quartz",
-"thunder crystal",
-"electric sapphire",
-"sunken relic stone",
-"abyss crystal",
-"shadow marble",
-"glacier quartz",
-"crystalized lava",
-"ancient rune stone",
-"enchanted meteorite",
-"moon crater rock",
-"silverstone",
-"golden crystal",
-"cosmic obsidian",
-"dimensional glass",
-"parallel world crystal",
-"dark emerald",
-"royal gemstone",
-"mystical pearl",
-"frozen diamond",
-"black ice crystal",
-"shadow sapphire",
-"void pearl",
-"nightmare stone",
-"dream crystal",
-"ancient dragon stone",
-"phoenix crystal",
-"immortal stone",
-"celestial ruby",
-"galactic quartz",
-"star dust crystal",
-"ether crystal",
-"spirit stone",
-"haunted gemstone",
-"lost civilization crystal",
-"alien mineral",
-"extraterrestrial crystal",
-"plasma stone",
-"energy crystal",
-"gravity stone",
-"timeworn relic rock",
-"time crystal",
-"dimension shard",
-"magic core crystal",
-"arcane meteor stone",
-"enchanted pearl",
-"dark crystal alloy",
-"silver moonstone",
-"black galaxy stone",
-"rainbow prism crystal",
-"hyper crystal",
-"infinity stone fragment",
-"quantum gemstone",
-"ancient cosmic rock",
-"void diamond",
-"celestial obsidian",
-"mystery crystal",
-"forgotten star stone"
-
-],
-
-
-
-rune:[
-
-"sapphire blue",
-"golden",
-"emerald green",
-"violet purple",
-"crimson red",
-"obsidian black",
-"silver white",
-"celestial cyan",
-"aurora green",
-"blood orange",
-"deep ocean blue",
-"midnight purple",
-"rose gold",
-"ancient bronze",
-"ghostly white",
-"neon turquoise",
-"lava red",
-"frost blue",
-"moonlight silver",
-"shadow violet",
-"dark emerald",
-"cosmic pink",
-"stellar gold",
-"galaxy blue",
-"void black",
-"mystic teal",
-"electric blue",
-"phantom purple",
-"dragon red",
-"phoenix orange",
-"arcane yellow",
-"ethereal blue",
-"spirit green",
-"magic pink",
-"royal purple",
-"ancient jade",
-"diamond white",
-"sunfire gold",
-"storm gray",
-"thunder blue",
-"cursed crimson",
-"enchanted aqua",
-"astral violet",
-"nebula pink",
-"solar orange",
-"lunar silver",
-"abyss blue",
-"shadow green",
-"frozen cyan",
-"glowing amber",
-"ruby red",
-"sapphire glow",
-"emerald glow",
-"amethyst glow",
-"plasma blue",
-"quantum violet",
-"infinity white",
-"dark ruby",
-"crystal cyan",
-"mystic gold",
-"forgotten bronze",
-"celestial white",
-"cosmic violet",
-"void crimson",
-"ancient silver",
-"arcane turquoise",
-"witchfire green",
-"phantom cyan",
-"spiritual gold",
-"dimensional purple",
-"starfire blue",
-"moonstone glow",
-"black flame",
-"white flame",
-"rainbow prism",
-"hyper neon blue",
-"toxic green",
-"radioactive lime",
-"galactic orange",
-"dream purple",
-"nightmare red",
-"ether blue",
-"divine gold",
-"shadow flame",
-"dark aurora",
-"crystal rainbow",
-"solar flare red",
-"ice crystal blue",
-"volcanic orange",
-"mystic lavender",
-"royal sapphire",
-"ancient rune bronze",
-"golden sunlight",
-"deep violet",
-"emerald aura",
-"crimson aura",
-"silver aura",
-"cosmic aura",
-"void aura",
-"legendary rainbow",
-"crystal lion guardian",
-"moonlight butterfly spirit",
-"shadow elephant beast",
-"nebula hummingbird",
-"frost wolf guardian",
-"golden sea turtle",
-"storm eagle spirit",
-"enchanted rabbit",
-"void whale creature",
-"emerald tiger beast",
-"glowing firefly fairy",
-"ancient giraffe guardian",
-"cosmic dolphin spirit",
-"crystal frog creature",
-"phantom raven",
-"lava crocodile",
-"celestial deer",
-"shadow octopus",
-"rainbow parrot spirit",
-"mystic panda guardian",
-"starfish oracle creature",
-"obsidian leopard",
-"moon fox spirit",
-"thunder owl",
-"crystal penguin",
-"forest gorilla guardian",
-"abyss shark beast",
-"golden bee spirit",
-"frost snake",
-"enchanted koala",
-"solar horse guardian",
-"nebula jellyfish",
-"shadow scorpion",
-"crystal kangaroo",
-"ancient turtle spirit",
-"storm falcon",
-"glowing moth creature",
-"emerald chameleon",
-"phantom bat",
-"cosmic bear",
-"magic ant colony spirit",
-"crystal beetle guardian",
-"moon seal creature",
-"fire salamander",
-"celestial swan",
-"void spider",
-"golden monkey spirit",
-"ice crocodile guardian",
-"star peacock",
-"forest hedgehog",
-"shadow shark",
-"crystal octopus",
-"storm whale guardian",
-"enchanted snail spirit",
-"lava lizard",
-"moon crab creature",
-"astral fox",
-"frost penguin",
-"golden flamingo",
-"ancient bison",
-"nebula horse",
-"crystal goat guardian",
-"shadow sheep spirit",
-"cosmic kangaroo",
-"glowing squirrel",
-"void rhino beast",
-"emerald hippo",
-"star zebra",
-"phantom camel",
-"mystic alpaca",
-"crystal dragon",
-"fire phoenix",
-"shadow unicorn",
-"golden griffin",
-"storm wyvern",
-"ancient kraken",
-"void leviathan",
-"celestial hydra",
-"phantom chimera",
-"arcane basilisk",
-"moon fairy creature",
-"forest elf guardian",
-"crystal golem",
-"earth elemental beast",
-"water spirit creature",
-"air elemental guardian",
-"shadow elemental",
-"light spirit",
-"dream guardian",
-"astral beast",
-creature:[
-"crystal panther spirit",
-"moonlight swan guardian",
-"shadow kangaroo beast",
-"golden hummingbird fairy",
-"frost bear guardian",
-"nebula octopus",
-"enchanted deer spirit",
-"storm cobra creature",
-"glowing raccoon",
-"ancient elephant guardian",
-"cosmic butterfly spirit",
-"lava tiger beast",
-"crystal owl guardian",
-"phantom dolphin",
-"emerald frog spirit",
-"void eagle",
-"star rabbit creature",
-"mystic whale guardian",
-"shadow lizard",
-"golden peacock spirit",
-"forest fox guardian",
-"ice leopard",
-"celestial penguin",
-"thunder beetle",
-"crystal seal creature",
-"abyss turtle",
-"moonlight crane",
-"fire ant spirit",
-"nebula bat",
-"ancient rhino beast",
-"glowing dragonfly",
-"storm buffalo guardian",
-"shadow flamingo",
-"crystal squirrel",
-"cosmic shark",
-"enchanted goat spirit",
-"void spider creature",
-"golden owl",
-"frost camel guardian",
-"starfish spirit",
-"mystic horse creature",
-"crystal mole guardian",
-"phantom butterfly",
-"lava snake",
-"celestial giraffe",
-"shadow parrot",
-"rainbow fish spirit",
-"ancient gorilla guardian",
-"moon crab creature",
-"storm turtle",
-"golden lion spirit",
-"abyss jellyfish",
-"crystal hedgehog",
-"nebula zebra",
-"fire salamander guardian",
-"shadow seal",
-"glowing bee creature",
-"cosmic leopard",
-"forest squirrel spirit",
-"ice falcon",
-"enchanted mouse",
-"crystal buffalo",
-"void raven",
-"moon deer guardian",
-"storm dolphin",
-"emerald spider",
-"phantom horse spirit",
-"star monkey",
-"lava chameleon",
-"ancient crocodile",
-"celestial butterfly",
-"dark wolf guardian",
-"golden fox beast",
-"crystal whale",
-"shadow turtle spirit",
-"frost owl",
-"nebula lion",
-"magic koala",
-"thunder hawk",
-"earth guardian beast",
-"crystal dragonling",
-"rainbow phoenix",
-"dark griffin",
-"moon unicorn",
-"ancient wyvern",
-"cosmic serpent",
-"void phoenix",
-"crystal pegasus",
-"shadow hydra",
-"golden chimera",
-"forest fairy beast",
-"star elf creature",
-"crystal elemental",
-"phantom golem",
-"dream spirit",
-"void guardian",
-"astral creature",
-"dimension beast",
-"eternal guardian",
-"mystical unknown creature"
-
-],
-
-
-
-skin:[
-
-"iridescent blue",
-"fiery orange",
-"pearl white",
-"emerald glow",
-"silver light",
-"obsidian black",
-"golden shimmer",
-"violet crystal",
-"crimson scales",
-"azure glass",
-"moonlight white",
-"shadow matte",
-"rainbow holographic",
-"frosted crystal",
-"nebula purple",
-"galaxy blue",
-"dark sapphire",
-"ruby red",
-"jade green",
-"aurora glow",
-"celestial silver",
-"black diamond texture",
-"translucent crystal",
-"glowing cyan",
-"ancient bronze",
-"molten lava",
-"frozen ice",
-"storm cloud gray",
-"cosmic pink",
-"star dust shimmer",
-"void black",
-"ethereal lavender",
-"magic turquoise",
-"phoenix flame orange",
-"dragon scale gold",
-"crystal rainbow",
-"phantom white",
-"shadow violet",
-"electric blue",
-"toxic green",
-"solar gold",
-"lunar pearl",
-"deep ocean blue",
-"mystic teal",
-"enchanted rose",
-"glacier blue",
-"volcanic red",
-"plasma purple",
-"quantum silver",
-"diamond glow",
-"opal rainbow",
-"spirit aura white",
-"dark emerald",
-"silver frost",
-"golden flame",
-"midnight blue",
-"ancient rune texture",
-"crystalized sapphire",
-"glowing amber",
-"celestial pink",
-"abyss purple",
-"storm lightning pattern",
-"moonstone texture",
-"starry night pattern",
-"galactic swirl",
-"dimensional glass",
-"energy plasma skin",
-"magic flame texture",
-"shadow smoke texture",
-"frost crystal scales",
-"liquid metal silver",
-"black pearl shine",
-"white marble texture",
-"gold leaf pattern",
-"emerald crystal scales",
-"ruby gemstone skin",
-"sapphire gemstone skin",
-"amethyst glow",
-"obsidian crystal armor",
-"fairy dust shimmer",
-"cosmic aurora skin",
-"ancient stone texture",
-"glowing forest green",
-"mystic flame blue",
-"rainfall glass texture",
-"sunfire orange",
-"moon shadow gray",
-"void energy skin",
-"celestial rainbow",
-"hyper neon glow",
-"legendary golden aura",
-"infinity crystal texture",
-"forgotten magic skin",
-"astral shimmer",
-"spiritual glow",
-"dragon pearl scales",
-"enchanted crystal armor",
-"nightmare shadow texture",
-"divine light skin",
-"mythical prism skin"
-
-],
-
-
-
-eyes:[
-
-"amber",
-"ruby red",
-"amethyst purple",
-"electric blue",
-"emerald green",
-"golden glow",
-"silver white",
-"obsidian black",
-"crystal cyan",
-"neon turquoise",
-"fiery orange",
-"moonlight blue",
-"violet flame",
-"blood crimson",
-"starry galaxy",
-"aurora rainbow",
-"frost white",
-"shadow purple",
-"celestial gold",
-"diamond blue",
-"jade green",
-"cosmic pink",
-"void black",
-"glowing sapphire",
-"ancient bronze",
-"plasma blue",
-"mystic teal",
-"phantom white",
-"dragon gold",
-"phoenix orange",
-"storm gray",
-"lightning yellow",
-"dark emerald",
-"ruby crystal",
-"amethyst crystal",
-"sapphire crystal",
-"nebula violet",
-"solar flare",
-"lunar silver",
-"ghostly blue",
-"enchanted green",
-"arcane purple",
-"magic flame",
-"deep ocean blue",
-"lava red",
-"frozen cyan",
-"crystal rainbow",
-"ethereal white",
-"shadow ember",
-"golden fire",
-"silver moon",
-"black diamond",
-"galactic swirl",
-"star dust glow",
-"quantum blue",
-"infinity rainbow",
-"ancient rune glow",
-"spirit green",
-"dreamy lavender",
-"nightmare crimson",
-"abyssal blue",
-"celestial pink",
-"divine white",
-"dark sapphire",
-"electric violet",
-"toxic neon green",
-"hyper blue",
-"mystic amber",
-"solar gold",
-"moonstone glow",
-"phantom violet",
-"crystal pearl",
-"glowing jade",
-"storm lightning",
-"dragon flame",
-"phoenix fire",
-"void energy",
-"astral cyan",
-"dimension purple",
-"enchanted ruby",
-"frost crystal",
-"aurora blue",
-"cosmic orange",
-"shadow silver",
-"magic rainbow",
-"ancient emerald",
-"legendary gold",
-"ethereal turquoise",
-"forgotten star glow",
-"dark crystal",
-"bright plasma",
-"celestial sapphire",
-"mystery violet",
-"arcane flame",
-"immortal light",
-"mythical prism"
-],
-
-
-
-
-element:[
-
-"magical blue mist",
-"sparkling gold dust",
-"cool smoke",
-"dark purple energy",
-"glowing green aura",
-"crimson flame",
-"silver magical particles",
-"floating crystal shards",
-"blue lightning sparks",
-"golden fire aura",
-"shadow smoke",
-"violet energy waves",
-"emerald magic fog",
-"cosmic stardust",
-"frozen ice mist",
-"burning orange flames",
-"moonlight particles",
-"dark shadow flames",
-"rainbow energy glow",
-"ancient rune sparks",
-"electric blue aura",
-"purple magical smoke",
-"golden galaxy dust",
-"black void energy",
-"crystal light beams",
-"floating magic orbs",
-"mystic wind swirl",
-"celestial rays",
-"phantom mist",
-"dragon fire aura",
-"phoenix flame particles",
-"storm clouds",
-"thunder sparks",
-"enchanted leaves",
-"glowing fairy dust",
-"astral energy field",
-"nebula mist",
-"star fragments",
-"liquid magic waves",
-"arcane energy rings",
-"shadow tendrils",
-"white holy light",
-"dark purple flames",
-"blue frost crystals",
-"lava sparks",
-"golden magical smoke",
-"emerald energy waves",
-"violet lightning",
-"cosmic portal glow",
-"dimensional particles",
-"spirit flames",
-"ancient magic dust",
-"moon crystal aura",
-"sunfire glow",
-"black mist vortex",
-"crystal rainbow particles",
-"energy plasma waves",
-"mystical fog",
-"enchanted water droplets",
-"floating golden runes",
-"dark energy storm",
-"silver moon rays",
-"glowing sapphire particles",
-"ruby flame sparks",
-"amethyst magic aura",
-"void mist",
-"infinity light particles",
-"quantum energy field",
-"celestial blue flames",
-"shadow galaxy smoke",
-"fairy sparkle trail",
-"frozen magic crystals",
-"electric storm aura",
-"arcane purple waves",
-"divine golden light",
-"nightmare fog",
-"dreamlike rainbow mist",
-"ancient spirit energy",
-"forest magic particles",
-"crystal dust cloud",
-"starfire sparks",
-"black flame aura",
-"aurora energy",
-"mystic thunder glow",
-"enchanted smoke rings",
-"cosmic lightning",
-"glowing ether waves",
-"forgotten relic energy",
-"legendary magic aura",
-"hyper neon particles",
-"dark crystal mist",
-"celestial storm",
-"prismatic energy",
-"immortal light rays",
-"mythical power field",
-"void crystal sparks",
-"astral flame vortex",
-"ancient cosmic energy"
-
-],
-
-
-
-
-light:[
-
-"cool moonlight",
-"twilight",
-"golden forest rays",
-"soft sunrise glow",
-"mystical blue light",
-"silver moon beams",
-"warm sunset rays",
-"dark enchanted lighting",
-"celestial white glow",
-"purple twilight haze",
-"emerald forest light",
-"golden magical illumination",
-"crystal reflections",
-"frosty morning light",
-"deep midnight glow",
-"aurora sky light",
-"cosmic starlight",
-"dreamy pastel glow",
-"ancient temple lighting",
-"shadowy candlelight",
-"ethereal mist light",
-"soft angelic rays",
-"volcanic orange glow",
-"blue fire illumination",
-"enchanted woodland light",
-"fairy dust glow",
-"moonbeam spotlight",
-"nebula colored light",
-"dark fantasy lighting",
-"mystic purple glow",
-"golden hour sunlight",
-"rainbow prism light",
-"glowing crystal light",
-"stormy atmosphere light",
-"foggy forest illumination",
-"underwater blue glow",
-"ancient rune glow",
-"phantom silver light",
-"shadow portal lighting",
-"divine heavenly rays",
-"black magic candle glow",
-"frozen ice reflection",
-"dragon fire glow",
-"phoenix flame light",
-"soft cloudy daylight",
-"starfall illumination",
-"galaxy horizon glow",
-"hidden cave crystal light",
-"enchanted lantern glow",
-"mysterious green light",
-"dark blue ambient light",
-"warm magical lanterns",
-"ethereal golden haze",
-"moonstone reflection",
-"crystal cave illumination",
-"cosmic sunrise",
-"purple galaxy glow",
-"silent forest shadows",
-"silver twilight rays",
-"ancient castle lighting",
-"magic portal light",
-"floating orb illumination",
-"fairy kingdom glow",
-"night forest ambience",
-"celestial aurora rays",
-"deep ocean light",
-"glowing mushroom forest light",
-"shadow and light contrast",
-"mystical fog illumination",
-"golden dust sunlight",
-"arcane blue rays",
-"dark violet atmosphere",
-"white crystal shine",
-"ruby red glow",
-"emerald green illumination",
-"sapphire blue lighting",
-"amethyst purple rays",
-"storm lightning flash",
-"rainy night glow",
-"soft candle aura",
-"forgotten ruins lighting",
-"legendary artifact glow",
-"infinity cosmic light",
-"hyper neon illumination",
-"dimensional portal glow",
-"ancient magical sunrise",
-"phantom dream light",
-"spiritual white rays",
-"void darkness glow",
-"starry night reflection",
-"enchanted forest sunrise",
-"mystic cave shadows",
-"golden celestial beam",
-"astral moon glow",
-"mythical dawn light",
-"shadow realm lighting",
-"prismatic rainbow rays",
-"eternal magical glow"
-
-],
-
-
-
-
-floor:[
-
-"dark moss-covered forest floor",
-"wet emerald moss forest floor",
-"ancient forest floor covered with fallen leaves",
-"shadowy woodland floor with damp soil",
-"misty forest floor covered in soft moss",
-"dark muddy forest floor with tiny roots",
-"rain-soaked forest floor with scattered bark",
-"deep green moss carpet forest floor",
-"old woodland floor with decaying leaves",
-"fog-covered forest ground with moss patches",
-"black soil forest floor with small stones",
-"wild jungle floor covered with vines",
-"ancient mossy ground with twisted roots",
-"forest floor covered with pine needles",
-"dark woodland soil mixed with lichen",
-"wet forest ground with mushroom clusters",
-"hidden forest floor beneath giant trees",
-"soft moss-covered earth with tiny plants",
-"rocky forest floor with green moss growth",
-"forgotten forest ground covered with debris",
-"dark rainforest floor with wet vegetation",
-"old forest floor with broken branches",
-"moist woodland ground with fern leaves",
-"shadow forest floor with glowing moss",
-"natural forest earth covered with moss layers",
-"deep jungle floor with tangled roots",
-"dark soil covered with colorful fungi",
-"forest floor with dew-covered moss",
-"ancient woodland ground with cracked bark",
-"foggy forest floor with tiny plants",
-"wet moss terrain with scattered pebbles",
-"dark forest floor covered with dry leaves",
-"enchanted woodland floor with magical plants",
-"mysterious forest ground with moss and stones",
-"rainforest floor with thick green vegetation",
-"dark earthy floor with exposed roots",
-"forest floor covered with fallen flowers",
-"cold forest ground with icy moss",
-"old mossy terrain with rotten wood",
-"deep forest floor hidden in shadows",
-"wild woodland floor with natural textures",
-"damp forest soil with tiny mushrooms",
-"dark green moss terrain under trees",
-"ancient jungle floor with leaf litter",
-"forest ground covered with small branches",
-"wet earth floor with water puddles",
-"silent forest floor covered in fog",
-"dark woodland terrain with stone fragments",
-"lush mossy forest ground",
-"mysterious forest floor with glowing spores",
-"thick moss forest floor with roots",
-"dark forest earth after rainfall",
-"forgotten woodland floor with decayed plants",
-"soft muddy forest ground",
-"forest floor covered with autumn leaves",
-"shadowy moss terrain with tiny rocks",
-"ancient tree-covered forest floor",
-"deep green jungle earth",
-"dark enchanted forest ground",
-"wet woodland floor with natural debris",
-"forest floor covered with fern shadows",
-"black mossy ground with hidden roots",
-"forest soil mixed with fallen petals",
-"dark forest floor with crystal-like stones",
-"misty woodland earth with moss",
-"rainy forest ground covered in leaves",
-"old jungle floor with thick vegetation",
-"dark forest terrain with organic textures",
-"moss-covered rocky forest floor",
-"ancient forest soil with tree fragments",
-"wet green forest carpet",
-"shadow forest floor with tiny plants",
-"deep woodland ground with soft moss",
-"dark forest floor with water reflections",
-"foggy moss-covered terrain",
-"natural forest floor with decayed leaves",
-"dark earth covered with lichen",
-"wild forest ground with tangled roots",
-"ancient moss terrain beneath old trees",
-"wet jungle floor with organic matter",
-"dark woodland floor with scattered stones",
-"forest ground covered with tiny flowers",
-"deep forest floor with glowing fungi",
-"mossy earth with fallen branches",
-"dark rainforest soil with roots",
-"old forest floor with natural patterns",
-"hidden woodland floor under fog",
-"wet moss ground with small streams",
-"dark forest floor with leaf textures",
-"enchanted moss terrain",
-"ancient woodland soil with rocks",
-"shadowy jungle floor",
-"green moss-covered forest earth",
-"dark forest ground with wild plants",
-"rain-soaked woodland floor",
-"mysterious forest soil with spores",
-"deep forest floor with natural decay",
-"old mossy ground with bark pieces",
-"dark forest terrain covered with vegetation",
-"silent woodland floor with mist"
-
-]
-
-
-
-};
-
-
-
-
-function pick(a){
-
-return a[Math.floor(Math.random()*a.length)];
-
-}
-
-/* =====================
-GENERATE PROMPT
-===================== */
-
-
-function generatePrompt(){
-
-
-let history=JSON.parse(
-
-localStorage.getItem("eggHistory")||"[]"
-
-);
-
-
-
-let result;
-
-let key;
-
-
-
-do{
-
-
-result={
-
-m:pick(data.material),
-
-r:pick(data.rune),
-
-c:pick(data.creature),
-
-s:pick(data.skin),
-
-e:pick(data.eyes),
-
-x:pick(data.element),
-
-l:pick(data.light),
-
-f:pick(data.floor)
-
-};
-
-
-
-key=JSON.stringify(result);
-
-
-
-}
-
-while(history.includes(key));
-
-
-
-history.push(key);
-
-
-
-localStorage.setItem(
-
-"eggHistory",
-
-JSON.stringify(history)
-
-);
-
-
-
-
-
-output.value=`Ultra-realistic, hyper-detailed macro photography on a ${result.f}. A single ${result.m} magical egg is nestled on the ground. The egg surface is etched with glowing ${result.r} runic patterns. A wide crack has formed across the shell. A baby ${result.c} emerges from the egg. Its body has a ${result.s} bioluminescent glow. The creature's eyes are ${result.e}. Tiny tendrils of ${result.x} escape from the egg. Soft ${result.l} filters through the forest canopy. Cinematic dramatic lighting. Extreme macro lens. The creature is moving naturally according to its species, flying creatures are flying, running creatures are running, swimming creatures are swimming, with realistic movement and behavior. High-resolution photorealistic fantasy creature photography. 8K detail, realistic textures, magical atmosphere.`;
-
-}
-
-
-
-
-/* =====================
-COPY
-===================== */
-
-
-function copyPrompt(){
-
-
-navigator.clipboard.writeText(output.value);
-
-
-alert("Copied ✔️");
-
-
-}
-
-
-
-</script>
-
-
+<body class="text-white">
+
+    <canvas id="network-canvas"></canvas>
+    
+    <div id="white-transition"></div>
+
+    <div id="loader-screen">
+        <!-- Placeholder image if local logo isn't found -->
+        <img src="VLOGAIZY Logo.png" alt="VLOGAIZY Logo" class="logo-loader" id="brand-logo" onerror="this.src='https://placehold.co/300x300/000000/FFFFFF?text=VLOGAIZY'">
+    </div>
+
+    <header class="min-h-screen flex flex-col justify-center items-center text-center p-6">
+        <div class="animate-float">
+            <h1 class="text-5xl md:text-8xl font-bold uppercase tracking-widest bg-clip-text text-transparent bg-gradient-to-r from-gray-100 via-gray-400 to-gray-700 animate-gradient animate-slide-up">VLOGAIZY</h1>
+            <p class="mt-4 text-gray-500 uppercase tracking-[0.4em] text-sm animate-slide-up" style="animation-delay: 0.3s">Vlog | Ai | Lazy</p>
+        </div>
+    </header>
+
+    <section id="about" class="py-20 px-6 max-w-4xl mx-auto text-center reveal">
+        <h2 class="text-3xl font-bold mb-8">Redefining Storytelling</h2>
+        <p class="text-gray-400 leading-relaxed text-lg mb-6">
+            We are a collective of creators pushing the boundaries of digital content. 
+            VLOGAIZY bridges the gap between high-end production and authentic community engagement. 
+            Welcome to the new era of media where we combine human creativity with AI-powered efficiency.
+        </p>
+    </section>
+
+    <section id="founder" class="py-20 px-6 max-w-4xl mx-auto reveal">
+        <div class="static-panel p-6 md:p-12 rounded-[2rem] flex flex-col md:flex-row items-center md:items-start gap-6 md:gap-8 border border-white/10">
+            <div class="w-32 h-32 md:w-48 md:h-48 rounded-full overflow-hidden flex-shrink-0 border-2 border-white/10">
+                <img src="Founder.jpg" alt="Founder" class="w-full h-full object-cover" onerror="this.src='https://placehold.co/400x400/000000/FFFFFF?text=Founder'">
+            </div>
+            <div class="text-center md:text-left">
+                <div class="flex items-center gap-2 justify-center md:justify-start">
+                    <h3 class="text-2xl md:text-4xl font-bold mb-1">Lasindu Bineesha</h3>
+                    <span class="text-[10px] md:text-sm font-bold text-gray-500 uppercase tracking-widest">(LAZY)</span>
+                </div>
+                <p class="text-[0.6rem] md:text-[0.7rem] tracking-[0.25em] text-gray-500 uppercase mb-4 md:mb-6">CEO & Founder</p>
+                <p class="text-sm md:text-base text-gray-300 italic mb-6 md:mb-8 leading-relaxed font-light">"VLOGAIZY was born from a vision to simplify complex storytelling."</p>
+                <div class="flex justify-center md:justify-start gap-4">
+                    <a href="https://www.facebook.com/LKBineesha" target="_blank" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-white/20 hover:bg-white hover:text-black transition-all">
+                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874V12h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                    </a>
+                    <a href="https://www.instagram.com/lasindu_bineesha" target="_blank" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-white/20 hover:bg-white hover:text-black transition-all">
+                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.073 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.073-4.947-.197-4.354-2.618-6.78-6.979-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.791-4-4 0-2.209 1.791-4 4-4 2.209 0 4 1.791 4 4 0 2.209-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+                    </a>
+                    <a href="https://wa.link/60lgdn" target="_blank" class="w-10 h-10 md:w-12 md:h-12 flex items-center justify-center rounded-full border border-white/20 hover:bg-white hover:text-black transition-all">
+                        <svg class="w-4 h-4 md:w-5 md:h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.591 5.52 0 10.036-4.516 10.036-10.035 0-5.52-4.516-10.036-10.036-10.036-5.52 0-10.036 4.516-10.036 10.036 0 2.158.625 4.303 1.802 6.176l-1.185 4.324 4.427-1.16zm9.29-6.494c-.28-.14-1.655-.817-1.912-.911-.258-.093-.446-.14-.635.14-.19.28-.731.912-.896 1.099-.164.187-.329.21-.607.07-.279-.14-1.177-.434-2.242-1.385-.828-.739-1.389-1.651-1.551-1.931-.162-.28-.017-.431.123-.57.126-.123.28-.321.42-.481.14-.16.187-.279.28-.466.094-.187.047-.35-.023-.49-.07-.14-.635-1.531-.871-2.097-.229-.54-.463-.466-.635-.474-.164-.008-.352-.009-.54-.009s-.492.071-.75.35c-.258.28-.985.962-.985 2.346 0 1.384 1.008 2.72 1.148 2.906.14.187 1.983 3.029 4.805 4.249.673.29 1.199.463 1.61.593.679.215 1.298.185 1.786.113.545-.081 1.655-.677 1.889-1.33.234-.653.234-1.213.164-1.33-.07-.117-.258-.187-.538-.328z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="py-20 px-6 max-w-6xl mx-auto">
+        <h2 class="text-3xl font-bold text-center mb-12 reveal">Our Services</h2>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="glass-panel p-8 rounded-xl text-center hover:border-white transition-all reveal" style="transition-delay: 0.1s">
+                <h3 class="text-xl font-bold mb-4">Content Creation</h3>
+                <p class="text-gray-400">High-end video production tailored to your unique audience.</p>
+            </div>
+            <div class="glass-panel p-8 rounded-xl text-center hover:border-white transition-all reveal" style="transition-delay: 0.2s">
+                <h3 class="text-xl font-bold mb-4">AI Integration</h3>
+                <p class="text-gray-400">Leveraging cutting-edge AI tools for faster editing and smarter workflows.</p>
+            </div>
+            <div class="glass-panel p-8 rounded-xl text-center hover:border-white transition-all reveal" style="transition-delay: 0.3s">
+                <h3 class="text-xl font-bold mb-4">Strategy Consulting</h3>
+                <p class="text-gray-400">Data-driven strategies to grow your digital presence and engagement.</p>
+            </div>
+        </div>
+    </section>
+
+    <section id="mini-game" class="py-20 px-6 max-w-4xl mx-auto reveal">
+        <h2 class="text-3xl font-bold text-center mb-8">Fun Time</h2>
+        <div class="static-panel p-6 rounded-lg mb-6">
+            <div class="flex justify-between items-center mb-4 text-lg font-bold">
+                <div class="flex flex-col">
+                    <span>Score: <span id="score">0</span></span>
+                    <span class="text-xs text-gray-400 font-normal mt-1">Best: <span id="highscore">0</span></span>
+                </div>
+                <div id="lives" class="flex gap-1 text-red-500">
+                    <span>🤍🤍🤍</span>
+                </div>
+                <button id="start-btn" class="bg-white text-black px-3 md:px-6 py-2 rounded-full font-bold text-xs md:text-base">Start Game</button>
+            </div>
+            <canvas id="game-canvas"></canvas>
+        </div>
+    </section>
+
+    <section id="last-contents" class="py-4 px-4 max-w-4xl mx-auto reveal">
+        <h2 class="text-3xl font-bold text-center mb-8">Last Contents</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-2">
+            <div class="content-card p-1 rounded-lg overflow-hidden border border-transparent hover:border-white transition-all duration-300 w-full max-w-[280px] mx-auto sm:max-w-full">
+                <div class="relative w-full aspect-[9/16] rounded-md overflow-hidden bg-gray-800">
+                    <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/mOEb28p3wyw" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="content-card p-1 rounded-lg overflow-hidden w-full max-w-[280px] mx-auto sm:max-w-full">
+                <div class="relative w-full aspect-[9/16] rounded-md overflow-hidden bg-gray-800">
+                    <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/sIrBVSkGte4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+            <div class="content-card p-1 rounded-lg overflow-hidden w-full max-w-[280px] mx-auto sm:max-w-full">
+                <div class="relative w-full aspect-[9/16] rounded-md overflow-hidden bg-gray-800">
+                    <iframe class="absolute inset-0 w-full h-full" src="https://www.youtube.com/embed/30M2GJ--TCg" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="py-20 px-6 text-center reveal">
+        <p class="text-gray-500 uppercase tracking-[0.3em] text-xs mb-4">Join The Network</p>
+        <h2 class="text-3xl font-bold mb-10">Connect With Us</h2>
+        <div class="flex flex-wrap justify-center gap-4">
+            <a href="https://www.youtube.com/@VLOGAIZY" target="_blank" class="social-btn rounded-full flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.377.505 9.377.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z"/></svg>
+                YouTube
+            </a>
+            <a href="https://www.facebook.com/VLOGAIZY" target="_blank" class="social-btn rounded-full flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874V12h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                Facebook
+            </a>
+            <a href="https://www.tiktok.com/@vlogaizy_lk" target="_blank" class="social-btn rounded-full flex items-center gap-2">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-3.9 4.83 4.83 0 0 1-3.77 3.9v3.77h3.77v3.77c0 2.08-1.69 3.77-3.77 3.77a3.77 3.77 0 0 1-3.77-3.77 3.77 3.77 0 0 1 3.77-3.77V10.46a7.54 7.54 0 0 0-7.54 7.54 7.54 7.54 0 0 0 7.54 7.54 7.54 7.54 0 0 0 7.54-7.54V6.69z"/></svg>
+                TikTok
+            </a>
+        </div>
+    </section>
+
+    <footer class="py-10 text-center text-gray-600 text-sm border-t border-white/10 reveal">
+        &copy; 2026 VLOGAIZY. All Rights Reserved.
+    </footer>
+
+    <script>
+        const canvas = document.getElementById('network-canvas');
+        const ctx = canvas.getContext('2d');
+        let frameCount = 0;
+        let mouse = { x: -1000, y: -1000 };
+        let techNodes = [];
+
+        function initCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            let nodeCount = window.innerWidth < 640 ? 25 : (window.innerWidth < 1024 ? 60 : 100);
+            techNodes = Array.from({ length: nodeCount }, () => ({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                vx: (Math.random() - 0.5) * 1.2,
+                vy: (Math.random() - 0.5) * 1.2,
+                size: Math.random() * 2 + 1.5
+            }));
+        }
+
+        window.addEventListener('resize', initCanvas);
+        window.addEventListener('mousemove', (e) => { mouse.x = e.clientX; mouse.y = e.clientY; });
+        initCanvas();
+
+     let moogLead, polyChords, isMusicStarted = false;
+
+        async function initAudioGlobal() {
+            if (isMusicStarted) return;
+            isMusicStarted = true;
+            
+            await Tone.start();
+
+            // Reverb to make it ambient and spacious
+            const reverb = new Tone.Reverb({ decay: 5, wet: 0.4 }).toDestination();
+            const filter = new Tone.Filter(1200, "lowpass").connect(reverb);
+
+            // Main Lead Synth (The "Moog" style saw wave)
+            moogLead = new Tone.MonoSynth({
+                oscillator: { type: "sawtooth" },
+                filterEnvelope: { attack: 0.05, decay: 0.2, sustain: 0.2, release: 0.5, baseFrequency: 200, octaves: 2 },
+                envelope: { attack: 0.01, decay: 0.1, sustain: 0.3, release: 0.5 }
+            }).connect(filter);
+            moogLead.volume.value = -8;
+
+            // Chords Synth (Background pads)
+            polyChords = new Tone.PolySynth(Tone.Synth, {
+                oscillator: { type: "triangle" },
+                envelope: { attack: 0.5, decay: 0.5, sustain: 0.4, release: 0.5 }
+            }).connect(reverb);
+            polyChords.volume.value = -12;
+
+            Tone.Transport.bpm.value = 110;
+            
+            // Chord progression: Cmaj -> Am -> Fmaj -> Gmaj
+            const progression = [
+                ["C3", "E3", "G3"], 
+                ["A2", "C3", "E3"], 
+                ["F2", "A2", "C3"], 
+                ["G2", "B2", "D3"]
+            ];
+            
+            // Melody with Zen variety
+            const melody = ["C4", "E4", "G4", "A4", "G4", "E4", "C4", "A3"];
+            
+            let step = 0;
+            let chordStep = 0;
+
+            // Start the sequencer
+            new Tone.Loop((time) => {
+                // Play chord every 6 steps
+                if (step % 6 === 0) {
+                    polyChords.triggerAttackRelease(progression[chordStep % progression.length], "3n", time);
+                    chordStep++;
+                }
+
+                // Play melody with probability to add variety
+                if (Math.random() > 0.1) {
+                    moogLead.triggerAttackRelease(melody[step % melody.length], "8n", time);
+                }
+                
+                step++;
+            }, "4n").start(0);
+
+            Tone.Transport.start();
+        }
+        // Initialize music on first click anywhere
+        document.addEventListener('click', initAudioGlobal, { once: true });
+
+        function drawBackground() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            frameCount++;
+            
+            const isMobile = window.innerWidth < 768;
+            const lineWidthVal = isMobile ? 1.5 : 3;
+
+            techNodes.forEach((node, i) => {
+                node.x += node.vx * 0.8;
+                node.y += node.vy * 0.8;
+                
+                if (node.x < 0 || node.x > canvas.width) node.vx *= -1;
+                if (node.y < 0 || node.y > canvas.height) node.vy *= -1;
+
+                ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, node.size + 1, 0, Math.PI * 2);
+                ctx.fill();
+
+                let distMouse = Math.hypot(node.x - mouse.x, node.y - mouse.y);
+                if (distMouse < 250) {
+                    ctx.strokeStyle = `rgba(255, 255, 255, ${0.9 * (1 - distMouse / 250)})`;
+                    ctx.beginPath();
+                    ctx.lineWidth = lineWidthVal;
+                    ctx.moveTo(node.x, node.y);
+                    ctx.lineTo(mouse.x, mouse.y);
+                    ctx.stroke();
+                }
+
+                for (let j = i + 1; j < techNodes.length; j++) {
+                    let other = techNodes[j];
+                    let dist = Math.hypot(node.x - other.x, node.y - other.y);
+                    if (dist < 200) { 
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.5 * (1 - dist / 200)})`;
+                        ctx.beginPath();
+                        ctx.lineWidth = isMobile ? 1 : 2;
+                        ctx.moveTo(node.x, node.y);
+                        ctx.lineTo(other.x, other.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(drawBackground);
+        }
+        drawBackground();
+
+        const gameCanvas = document.getElementById('game-canvas');
+        const gameCtx = gameCanvas.getContext('2d');
+        const scoreEl = document.getElementById('score');
+        const highScoreEl = document.getElementById('highscore');
+        const livesEl = document.getElementById('lives');
+        const startBtn = document.getElementById('start-btn');
+        const nodeImg = new Image();
+        nodeImg.src = 'VLOGAIZY Logo.png'; 
+        
+        let highScore = localStorage.getItem('vlogaizy_highscore') || 0;
+        if (highScoreEl) highScoreEl.innerText = highScore;
+        
+        let hitSynth, missSynth, stateSynth;
+        function initAudio() {
+            if (hitSynth) return;
+            hitSynth = new Tone.Synth({
+                oscillator: { type: 'triangle' },
+                envelope: { attack: 0.01, decay: 0.1, sustain: 0, release: 0.1 }
+            }).toDestination();
+            hitSynth.volume.value = -5;
+
+            missSynth = new Tone.MembraneSynth().toDestination();
+            missSynth.volume.value = -10;
+
+            stateSynth = new Tone.PolySynth(Tone.Synth).toDestination();
+            stateSynth.volume.value = -12;
+        }
+
+        function playHitSound() { if(hitSynth && Tone.context.state === 'running') hitSynth.triggerAttackRelease("E5", "16n"); }
+        function playMissSound() { if(missSynth && Tone.context.state === 'running') missSynth.triggerAttackRelease("C2", "8n"); }
+        function playStartSound() {
+            if(stateSynth && Tone.context.state === 'running') {
+                const now = Tone.now();
+                stateSynth.triggerAttackRelease(["C4", "E4", "G4"], "8n", now);
+                stateSynth.triggerAttackRelease("C5", "8n", now + 0.2);
+            }
+        }
+        function playGameOverSound() {
+            if(stateSynth && Tone.context.state === 'running') {
+                const now = Tone.now();
+                stateSynth.triggerAttackRelease("G4", "8n", now);
+                stateSynth.triggerAttackRelease("Eb4", "8n", now + 0.2);
+                stateSynth.triggerAttackRelease("C4", "2n", now + 0.4);
+            }
+        }
+
+        let gameActive = false;
+        let score = 0;
+        let lives = 3;
+        let spawnRate = 1000;
+        let lastSpawnTime = 0;
+        let gameNodes = [];
+
+        function initGameCanvas() {
+            gameCanvas.width = gameCanvas.offsetWidth;
+            gameCanvas.height = gameCanvas.offsetHeight;
+        }
+        window.addEventListener('resize', initGameCanvas);
+        initGameCanvas();
+
+        function updateGame(timestamp) {
+            if (!gameActive) return;
+            gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
+            if (timestamp - lastSpawnTime > Math.max(300, spawnRate - (score * 20))) {
+                const isDesktop = window.innerWidth >= 768;
+                const nodeRadius = isDesktop ? 45 : 25; 
+                gameNodes.push({
+                    x: Math.random() * (gameCanvas.width - nodeRadius * 2) + nodeRadius,
+                    y: Math.random() * (gameCanvas.height - nodeRadius * 2) + nodeRadius,
+                    radius: nodeRadius,
+                    life: 1.0,
+                    decay: 0.005 + (score * 0.0005)
+                });
+                lastSpawnTime = timestamp;
+            }
+
+            gameNodes.forEach((node, index) => {
+                node.life -= node.decay;
+                if (node.life <= 0) {
+                    gameNodes.splice(index, 1);
+                    lives--;
+                    playMissSound();
+                    updateLivesDisplay();
+                    if (lives <= 0) gameOver();
+                    return;
+                }
+                gameCtx.globalAlpha = node.life;
+                if (nodeImg.complete && nodeImg.naturalHeight !== 0) {
+                    gameCtx.drawImage(nodeImg, node.x - node.radius, node.y - node.radius, node.radius * 2, node.radius * 2);
+                } else {
+                    gameCtx.fillStyle = '#fff';
+                    gameCtx.beginPath();
+                    gameCtx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
+                    gameCtx.fill();
+                }
+                gameCtx.globalAlpha = 1.0;
+            });
+            requestAnimationFrame(updateGame);
+        }
+
+        function updateLivesDisplay() {
+            livesEl.innerHTML = '🤍'.repeat(lives) + '🖤'.repeat(3 - lives);
+        }
+
+        function gameOver() {
+            gameActive = false;
+            playGameOverSound();
+            
+            if (score > highScore) {
+                highScore = score;
+                localStorage.setItem('vlogaizy_highscore', highScore);
+                if (highScoreEl) highScoreEl.innerText = highScore;
+            }
+
+            startBtn.innerText = "Restart Game";
+            startBtn.disabled = false;
+            gameCtx.fillStyle = "white";
+            gameCtx.textAlign = "center";
+            gameCtx.font = "bold 30px Montserrat";
+            gameCtx.fillText("GAME OVER!", gameCanvas.width / 2, gameCanvas.height / 2 - 25);
+            gameCtx.font = "20px Montserrat";
+            gameCtx.fillText("Final Score: " + score, gameCanvas.width / 2, gameCanvas.height / 2 + 10);
+            gameCtx.fillStyle = "#aaa";
+            gameCtx.font = "16px Montserrat";
+            gameCtx.fillText("Best Score: " + highScore, gameCanvas.width / 2, gameCanvas.height / 2 + 35);
+        }
+
+        function handleInput(clientX, clientY) {
+            if (!gameActive) return;
+            const rect = gameCanvas.getBoundingClientRect();
+            const x = clientX - rect.left;
+            const y = clientY - rect.top;
+            gameNodes.forEach((node, index) => {
+                if (Math.hypot(node.x - x, node.y - y) < node.radius * 2) {
+                    score++;
+                    playHitSound();
+                    scoreEl.innerText = score;
+                    gameNodes.splice(index, 1);
+                }
+            });
+        }
+
+        gameCanvas.addEventListener('mousedown', (e) => handleInput(e.clientX, e.clientY));
+        gameCanvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            handleInput(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: false });
+
+        startBtn.addEventListener('click', async () => {
+            await Tone.start();
+            initAudio();
+            playStartSound();
+            
+            gameActive = true;
+            score = 0;
+            lives = 3;
+            scoreEl.innerText = score;
+            updateLivesDisplay();
+            startBtn.innerText = "Running...";
+            startBtn.disabled = true;
+            gameNodes = [];
+            requestAnimationFrame(updateGame);
+        });
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) entry.target.classList.add('active');
+                else entry.target.classList.remove('active');
+            });
+        }, { threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+        window.addEventListener('load', () => {
+            const logo = document.getElementById('brand-logo');
+            const loaderScreen = document.getElementById('loader-screen');
+            setTimeout(() => logo.classList.add('animate-logo'), 100);
+            setTimeout(() => logo.classList.add('super-glow'), 600); 
+            setTimeout(() => {
+                document.getElementById('white-transition').style.opacity = '1';
+                setTimeout(() => {
+                    loaderScreen.style.display = 'none';
+                    document.getElementById('white-transition').style.opacity = '0';
+                }, 500);
+            }, 1000);
+        });
+    </script>
 </body>
-
 </html>
