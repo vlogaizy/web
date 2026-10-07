@@ -490,8 +490,7 @@
         let gameActive = false;
         let score = 0;
         let lives = 3;
-        let spawnRate = 800; // Increased initial spawn rate to make it slightly easier
-        let minSpawnRate = 200; // Increased lower bound
+        let spawnRate = 1200; // තවත් ලේසි කිරීමට ආරම්භක වේගය අඩු කර ඇත
         let lastSpawnTime = 0;
         let gameNodes = [];
 
@@ -506,23 +505,17 @@
             if (!gameActive) return;
             gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
             
-            // Calculate current spawn rate based on score, with a minimum limit
-            let currentSpawnRate = Math.max(minSpawnRate, spawnRate - (score * 20)); // Spawns get faster slower
-
-            if (timestamp - lastSpawnTime > currentSpawnRate) {
+            // ලකුණු වැඩිවන විට වේගවත් වන ප්‍රමාණය තවත් අඩු කර ඇත
+            if (timestamp - lastSpawnTime > Math.max(500, spawnRate - (score * 10))) {
                 const isDesktop = window.innerWidth >= 768;
-                
-                let nodeRadius = isDesktop ? 45 : 25; 
-                let sizeReduction = Math.min(nodeRadius * 0.4, score * 0.4); // Max reduction of 40%, shrinks slower
-                nodeRadius -= sizeReduction;
-
+                const nodeRadius = isDesktop ? 45 : 25; 
                 gameNodes.push({
                     x: Math.random() * (gameCanvas.width - nodeRadius * 2) + nodeRadius,
                     y: Math.random() * (gameCanvas.height - nodeRadius * 2) + nodeRadius,
-                    radius: Math.max(15, nodeRadius), // Slightly larger minimum size
+                    radius: nodeRadius,
                     life: 1.0,
-                    
-                    decay: 0.01 + (score * 0.001) // Fades away slightly slower
+                    // මැකී යන වේගය තවත් අඩු කර ඇත
+                    decay: 0.003 + (score * 0.0001)
                 });
                 lastSpawnTime = timestamp;
             }
