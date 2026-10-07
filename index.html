@@ -244,7 +244,7 @@
                 පුළුවන් පුළුවන් ඔයාට පුළුවන් ඔයාට බැරිනම් කාටද පුලුවන්
             </span>
             <p class="text-gray-300 text-sm md:text-base font-medium italic tracking-wide">
-                "If I get a score of 50, I'll turn on my DP."
+                "If I get a score of 100, I'll turn on my DP."
             </p>
         </div>
 
@@ -490,8 +490,8 @@
         let gameActive = false;
         let score = 0;
         let lives = 3;
-        let spawnRate = 800; // Decreased initial spawn rate to make them appear faster initially
-        let minSpawnRate = 200; // Added a lower bound for spawn rate
+        let spawnRate = 600; // Decreased initial spawn rate significantly
+        let minSpawnRate = 120; // Lowered the minimum spawn bound
         let lastSpawnTime = 0;
         let gameNodes = [];
 
@@ -507,22 +507,22 @@
             gameCtx.clearRect(0, 0, gameCanvas.width, gameCanvas.height);
             
             // Calculate current spawn rate based on score, with a minimum limit
-            let currentSpawnRate = Math.max(minSpawnRate, spawnRate - (score * 30)); // Increased the score multiplier to decrease spawn time faster
+            let currentSpawnRate = Math.max(minSpawnRate, spawnRate - (score * 40)); // Spawns get faster much quicker
 
             if (timestamp - lastSpawnTime > currentSpawnRate) {
                 const isDesktop = window.innerWidth >= 768;
-                // Made the nodes slightly smaller as the score increases to increase difficulty
+                
                 let nodeRadius = isDesktop ? 45 : 25; 
-                let sizeReduction = Math.min(nodeRadius * 0.4, score * 0.5); // Max reduction of 40%
+                let sizeReduction = Math.min(nodeRadius * 0.6, score * 0.8); // Max reduction of 60%, shrinks faster
                 nodeRadius -= sizeReduction;
 
                 gameNodes.push({
                     x: Math.random() * (gameCanvas.width - nodeRadius * 2) + nodeRadius,
                     y: Math.random() * (gameCanvas.height - nodeRadius * 2) + nodeRadius,
-                    radius: Math.max(15, nodeRadius), // Ensure they don't get too small to click
+                    radius: Math.max(10, nodeRadius), // They can get very tiny now
                     life: 1.0,
-                    // Increased the base decay and the score multiplier to make nodes disappear faster
-                    decay: 0.008 + (score * 0.001) 
+                    
+                    decay: 0.015 + (score * 0.002) // Fade away extremely fast as score increases
                 });
                 lastSpawnTime = timestamp;
             }
